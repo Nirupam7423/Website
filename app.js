@@ -6,7 +6,9 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.get("/api", (req, res) => {
-  res.send({ message: "Hello from the Node.js server!" });
+  res.send({
+    message: "Hello from the Node.js server!, CI/CD is working fine",
+  });
 });
 
 app.listen(PORT, () => {
