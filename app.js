@@ -5,6 +5,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
+app.get("/final-check", (req, res) => {
+  res.send({
+    message: "This will be the final check of env file",
+  });
+});
+
 app.get("/check", (req, res) => {
   res.send({
     message: "check env file",
