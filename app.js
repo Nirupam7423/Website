@@ -23,6 +23,12 @@ app.get("/api", (req, res) => {
   });
 });
 
+app.get("/findport", (req, res) => {
+  res.send({
+    message: `Server is running on http://localhost:${PORT}`,
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
