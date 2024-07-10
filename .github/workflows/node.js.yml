@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Node.js CI
 
 on:
@@ -17,9 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Add EC2 to known hosts
+      run: ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+
     - name: Backup .env file
       run: |
-        ssh ubuntu@13.48.230.230 "if [ -f ~/actions-runner/_work/Website/Website/.env ]; then
+        ssh ubuntu@${{ secrets.EC2_IP }} "if [ -f ~/actions-runner/_work/Website/Website/.env ]; then
           cp ~/actions-runner/_work/Website/Website/.env ~/actions-runner/_work/Website/Website/.env.backup
         fi"
 
@@ -34,7 +34,6 @@ jobs:
 
     - name: Restore .env file
       run: |
-        ssh ubuntu@13.48.230.230 "mv ~/actions-runner/_work/Website/Website/.env.backup ~/actions-runner/_work/Website/Website/.env"
+        ssh ubuntu@${{ secrets.EC2_IP }} "mv ~/actions-runner/_work/Website/Website/.env.backup ~/actions-runner/_work/Website/Website/.env"
 
     - run: pm2 restart app.js
-
