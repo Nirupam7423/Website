@@ -9,22 +9,32 @@ on:
 
 jobs:
   build:
-
     runs-on: self-hosted
-
     strategy:
       matrix:
         node-version: [20.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Backup .env file
+      run: |
+        ssh ubuntu@13.48.230.230 "if [ -f ~/actions-runner/_work/Website/Website/.env ]; then
+          cp ~/actions-runner/_work/Website/Website/.env ~/actions-runner/_work/Website/Website/.env.backup
+        fi"
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
     - run: npm ci
     - run: npm run build --if-present
+
+    - name: Restore .env file
+      run: |
+        ssh ubuntu@13.48.230.230 "mv ~/actions-runner/_work/Website/Website/.env.backup ~/actions-runner/_work/Website/Website/.env"
+
     - run: pm2 restart app.js
 
